@@ -130,10 +130,22 @@
 
 			/// FORWARD PROPAGATION VITERBI START START START
 			
-			answer = viterbi_compute(data,layers,observed_sequence);
+
 
 			// VITERBI END END END. MOST OPTIMAL PATH DETERMINED
+// Line Properties
 
+			lines = d3.select(".container")
+				.selectAll("line")
+				.data(edges)
+				.enter()
+				.append("line")
+				.attr("x1",function(d) { return d.src.x })
+				.attr("y1",function(d) { return d.src.y })
+				.attr("x2",function(d) { return d.dest.x })
+				.attr("y2",function(d) { return d.dest.y })
+				.style("stroke","rgb(6,150,225)")
+				.style("stroke-width","2")
 
 			// CIRCLE PROPERTIES
 
@@ -179,7 +191,11 @@
 					else{
 						return "red";
 					}
-				});
+				})
+				.attr("id",function(d){
+					return 'c_' + d;
+				})
+
 
 			// TEXT PROPERTIES
 
@@ -216,6 +232,9 @@
 				 		return layers[i].nodes[j].y;
 				 	}
 				 })
+				.attr("id",function(d){
+					return "t_"+d;
+				})
 				.text(function(d) {
 					if( d == 0 ){
 					 	i = 0;
@@ -233,17 +252,9 @@
 
 
 			// LINE PROPERTIES
-			lines = d3.select(".container")
-				.selectAll("line")
-				.data(edges)
-				.enter()
-				.append("line")
-				.attr("x1",function(d) { return d.src.x })
-				.attr("y1",function(d) { return d.src.y })
-				.attr("x2",function(d) { return d.dest.x })
-				.attr("y2",function(d) { return d.dest.y })
-				.style("stroke","rgb(6,150,225)")
-				.style("stroke-width","2")
+
+				answer = viterbi_compute(data,layers,observed_sequence);
+
 
 		});
 	</script>
