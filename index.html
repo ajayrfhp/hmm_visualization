@@ -83,16 +83,17 @@
 
 			// DETERMINE CIRCLE POSITION DATA
 			var total_nodes = 0;
+
 			for( i = 0; i < layers.length; i++ ){	
 				if ( i == 0){
 					layers[i].nodes[0].y = 200;
-					layers[i].nodes[0].x = 250 + Math.floor((total_nodes+1)/2)*100;
+					layers[i].nodes[0].x = 250 + Math.floor((total_nodes+1)/2)*200;
 					total_nodes += 1
 				}
 				else{
 					for( j = 0; j < layers[i].cnt; j++ ){
-						layers[i].nodes[j].x = 250 + Math.floor((total_nodes+1)/2)*100;
-						if( j%2 != 0){
+						layers[i].nodes[j].x = 450 + Math.floor((total_nodes+1)/2)*200;
+						if( j%2 == 0){
 							layers[i].nodes[j].y = 100;
 						}
 						else{
@@ -167,12 +168,12 @@
 				 		return layers[i].nodes[j].y;
 				 	}
 				})	
-				.attr("r",function(d) { return 30; })
+				.attr("r",function(d) { return 50; })
 				.attr("fill",function(d){
 					if ( d == 0){
 						return "gray";
 					}
-					else if( d%2 != 0){
+					else if( d%2 == 0){
 						return "green";
 					}
 					else{
@@ -215,8 +216,19 @@
 				 		return layers[i].nodes[j].y;
 				 	}
 				 })
-				.text(function(d) { return d; })
-				.attr("font-size","10px")
+				.text(function(d) {
+					if( d == 0 ){
+					 	i = 0;
+					 	j = 0;
+					 	return layers[i].nodes[j].probability;
+					}
+				 	else{
+				 		i = Math.floor((d-1)/2) + 1;
+				 		j = d%2;
+				 		return layers[i].nodes[j].probability.toFixed(3);
+				 	}
+				 })
+				.attr("font-size","20px")
 				.attr("fill","white");
 
 
@@ -233,9 +245,6 @@
 				.style("stroke","rgb(6,150,225)")
 				.style("stroke-width","2")
 
-
-
-
 		});
 	</script>
 
@@ -243,5 +252,5 @@
 
 <body>
 	Goal is to predict the most probable sequence of hidden states given a sequence of observed states. A HMM has been modelled and viterbi algorithm has been used. 
-	<svg class = 'container' width ='700' height = '500'></svg>
+	<svg class = 'container' width ='1500' height = '500'></svg>
 </body>
