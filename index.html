@@ -2,14 +2,21 @@
 <meta charset = 'utf-8'>
 <head>
 <script type="text/javascript" src = 'bower_components/jquery/dist/jquery.js'></script>
+<script type="text/javascript" src = 'bower_components/d3/d3.js'></script>
+<script type="text/javascript" src = 'viterbi.js'></script>
+
 
 	<script type="text/javascript">
 		var data = null;
 		var node = null;
+		var circle0, circle1, circle2 = null;
 		var node0, node1, node2, node3, node4, node5, node6 = null;
 		var layers,layer0, layer1, layer2, layer3 = null;
 		var answer = new Array();
 		var observed_sequence = ['Normal','Cold','Dizzy'];
+		var container = null;
+		var circle_position_data = [];
+		var edges = null;
 		$(document).ready(function(){
 			data = {
 				'states' : ['Healthy','Fever'],
@@ -41,12 +48,15 @@
 					}
 				}
 			};
+			circle_data = [ 0,1,2 ];
 			// Total number of Nodes = Number of states * Total States
 			// Properties of Node : Class
 			node = function(id,state,probability) {
 				this.id = id;
 				this.state = state;
 				this.probability = probability || 0; 
+				this.x = 0;
+				this.y = 0;
 			};
 			node0 = new node(0,'');
 			node1 = new node(1,'Healthy');
@@ -55,6 +65,8 @@
 			node4 = new node(4,'Fever');
 			node5 = new node(5,'Healthy');
 			node6 = new node(6,'Fever');
+
+
 			var layer = function(id,cnt,nodes){
 				this.id = id;
 				this.cnt = cnt;
@@ -66,56 +78,136 @@
 			layer3 = new layer(0,2,[node5,node6]);
 			layers = [layer0,layer1,layer2,layer3];
 
-			/// FORWARD PROPAGATION
-			for( i = 0; i < layers.length; i++ ){
-				if( i == 0 ){
-					probability = 0;
-				}
-				else if( i == 1 ){
-					for( j = 0; j < layers[i].cnt; j++ ){
-						var this_state = layers[i].nodes[j].state;
-						layers[i].nodes[j].probability = data.start_probability[this_state] * data.emission_probability[this_state][observed_sequence[i-1]]; 	
-					}
+			// DETERMINE CIRCLE POSITION DATA
+			var total_nodes = 0;
+			for( i = 0; i < layers.length; i++ ){	
+				if ( i == 0){
+					layers[i].nodes[0].y = 200;
+					layers[i].nodes[0].x = 250 + Math.floor((total_nodes+1)/2)*100;
+					total_nodes += 1
 				}
 				else{
-					// DP EQUATION OH WOW OH WOW
-					var best_probability = 0;
-					
 					for( j = 0; j < layers[i].cnt; j++ ){
-						best_probability = 0;
-						var this_state = layers[i].nodes[j].state;
-						for ( k = 0; k < layers[i-1].cnt; k++ ){
-							var previous_state = layers[i-1].nodes[k].state;
-							var this_probability = data.transition_probability[previous_state][this_state] * layers[i-1].nodes[k].probability * data.emission_probability[this_state][observed_sequence[i-1]];
-							if ( best_probability < this_probability ){
-								best_probability = this_probability;
-							}
+						layers[i].nodes[j].x = 250 + Math.floor((total_nodes+1)/2)*100;
+						if( j%2 != 0){
+							layers[i].nodes[j].y = 100;
 						}
-						layers[i].nodes[j].probability = best_probability;
+						else{
+							layers[i].nodes[j].y = 300;
+						}	
+						total_nodes += 1;
 					}
-					best_probability = 0;
-					var best_state = null;
-					for ( k = 0; k < layers[i-1].cnt; k++ ){
-						if( layers[i-1].nodes[k].probability > best_probability  ){
-							best_probability = layers[i-1].nodes[k].probability;
-							best_state = layers[i-1].nodes[k].state;
-						}
-					}
-					answer.push(best_state);	
 				}
 			}
 
-			var best_probability = 0;
-			var best_state = null;
-			// CHOOSE BEST STATE FOR LAST STAGE ALONE
-			for ( k = 0; k < layers[layers.length-1].cnt; k++ ){
-					if( layers[layers.length-1].nodes[k].probability > best_probability  ){
-						best_probability = layers[layers.length-1].nodes[k].probability;
-						best_state = layers[layers.length-1].nodes[k].state;
-					}
-				}
-			answer.push(best_state);
+
+
+			// CIRCLE POSITION DATA DETERMINED
+
+
+			// DETERMINE EDGES 
+
+
+			// EDGES DETERMINED
+
+
+
+			/// FORWARD PROPAGATION VITERBI START START START
 			
+			answer = viterbi_compute(data,layers);
+
+			// VITERBI END END END. MOST OPTIMAL PATH DETERMINED
+
+
+			// CIRCLE PROPERTIES
+
+			circles = d3.select(".container")
+				.selectAll("circle")
+				.data(circle_data)
+				.enter()
+				.append("circle");
+			circleAttributes = circles
+				.attr("cx",function(d){ 
+					if( d == 0 ){
+					 	i = 0;
+					 	j = 0;
+					 	return layers[i].nodes[j].x;
+					}
+				 	else{
+				 		i = Math.floor((d-1)/2) + 1;
+				 		j = d%2;
+				 		return layers[i].nodes[j].x;
+
+				 	}				 
+				})
+				.attr("cy",function(d){  
+					if( d == 0 ){
+					 	i = 0;
+					 	j = 0;
+					 	return layers[i].nodes[j].y;
+					}
+				 	else{
+				 		i = Math.floor((d-1)/2) + 1;
+				 		j = d%2;
+				 		return layers[i].nodes[j].y;
+				 	}
+				})	
+				.attr("r",function(d) { return 30; })
+				.attr("fill",function(d){
+					if ( d == 0){
+						return "gray";
+					}
+					else if( d%2 != 0){
+						return "green";
+					}
+					else{
+						return "red";
+					}
+				});
+
+			// TEXT PROPERTIES
+
+
+			text = d3.select(".container")
+				.selectAll("text")
+				.data(circle_data)
+				.enter()
+				.append("text");
+
+			textAttributes = text
+				.attr("x",function(d) { 
+					if( d == 0 ){
+					 	i = 0;
+					 	j = 0;
+					 	return layers[i].nodes[j].x;
+					}
+				 	else{
+				 		i = Math.floor((d-1)/2) + 1;
+				 		j = d%2;
+				 		return layers[i].nodes[j].x;
+
+				 	}
+				})
+				.attr("y",function(d){ 
+					if( d == 0 ){
+					 	i = 0;
+					 	j = 0;
+					 	return layers[i].nodes[j].y;
+					}
+				 	else{
+				 		i = Math.floor((d-1)/2) + 1;
+				 		j = d%2;
+				 		return layers[i].nodes[j].y;
+				 	}
+				 })
+				.text(function(d) { return d; })
+				.attr("font-size","10px")
+				.attr("fill","white");
+
+
+			// LINE PROPERTIES
+			
+
 
 		});
 	</script>
@@ -124,4 +216,5 @@
 
 <body>
 	Goal is to predict the most probable sequence of hidden states given a sequence of observed states. A HMM has been modelled and viterbi algorithm has been used. 
+	<svg class = 'container' width ='700' height = '500'></svg>
 </body>
