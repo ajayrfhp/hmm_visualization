@@ -16,7 +16,10 @@
 		var observed_sequence = ['Normal','Cold','Dizzy'];
 		var container = null;
 		var circle_position_data = [];
-		var edges = null;
+		var edges = [];
+		var line,lines = null;
+		var text = null;
+		var textAttributes = null;
 		$(document).ready(function(){
 			data = {
 				'states' : ['Healthy','Fever'],
@@ -48,7 +51,7 @@
 					}
 				}
 			};
-			circle_data = [ 0,1,2 ];
+			circle_data = [ 0,1,2,3,4,5,6 ];
 			// Total number of Nodes = Number of states * Total States
 			// Properties of Node : Class
 			node = function(id,state,probability) {
@@ -106,6 +109,18 @@
 
 
 			// DETERMINE EDGES 
+			for ( i = 0; i < layers.length - 1; i++){
+				for( j = 0; j < layers[i].cnt; j++ ){
+					this_node = layers[i].nodes[j];
+					for ( k = 0; k < layers[i+1].cnt; k++ ){
+						next_node = layers[i+1].nodes[k];
+						edges.push({'src' : { 'x' : this_node.x , 'y' : this_node.y},
+									'dest' : { 'x' : next_node.x , 'y' : next_node.y
+								}});
+
+					} 
+				}
+			}
 
 
 			// EDGES DETERMINED
@@ -114,7 +129,7 @@
 
 			/// FORWARD PROPAGATION VITERBI START START START
 			
-			answer = viterbi_compute(data,layers);
+			answer = viterbi_compute(data,layers,observed_sequence);
 
 			// VITERBI END END END. MOST OPTIMAL PATH DETERMINED
 
@@ -206,7 +221,19 @@
 
 
 			// LINE PROPERTIES
-			
+			lines = d3.select(".container")
+				.selectAll("line")
+				.data(edges)
+				.enter()
+				.append("line")
+				.attr("x1",function(d) { return d.src.x })
+				.attr("y1",function(d) { return d.src.y })
+				.attr("x2",function(d) { return d.dest.x })
+				.attr("y2",function(d) { return d.dest.y })
+				.style("stroke","rgb(6,150,225)")
+				.style("stroke-width","2")
+
+
 
 
 		});

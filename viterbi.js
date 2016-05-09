@@ -1,4 +1,5 @@
-function viterbi_compute(data,layers){
+function viterbi_compute(data,layers,observed_sequence){
+	
 	for( i = 0; i < layers.length; i++ ){
 					if( i == 0 ){
 						probability = 0;
