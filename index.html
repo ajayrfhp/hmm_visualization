@@ -4,6 +4,7 @@
 <script type="text/javascript" src = 'bower_components/jquery/dist/jquery.js'></script>
 <script type="text/javascript" src = 'bower_components/d3/d3.js'></script>
 <script type="text/javascript" src = 'viterbi.js'></script>
+<script type="text/javascript" src = 'util.js'></script>
 
 
 	<script type="text/javascript">
@@ -20,6 +21,10 @@
 		var line,lines = null;
 		var text = null;
 		var textAttributes = null;
+		var activationTable = null;
+		var headerData = null;
+		var rowData = null;
+		var tableTransmissionProbability = null;
 		$(document).ready(function(){
 			data = {
 				'states' : ['Healthy','Fever'],
@@ -51,6 +56,17 @@
 					}
 				}
 			};
+			tableTransmissionProbability = compute_transmission_table(data);
+			rowData = data.states;
+			headerData = data.states.slice();
+			
+			headerData.reverse();
+			headerData.push("States");
+			headerData.reverse();
+			
+
+
+			var transition_probability = data.transition_probability;
 			circle_data = [ 0,1,2,3,4,5,6 ];
 			// Total number of Nodes = Number of states * Total States
 			// Properties of Node : Class
@@ -87,12 +103,12 @@
 			for( i = 0; i < layers.length; i++ ){	
 				if ( i == 0){
 					layers[i].nodes[0].y = 200;
-					layers[i].nodes[0].x = 250 + Math.floor((total_nodes+1)/2)*200;
+					layers[i].nodes[0].x = 250 + Math.floor((total_nodes+1)/2)*150;
 					total_nodes += 1
 				}
 				else{
 					for( j = 0; j < layers[i].cnt; j++ ){
-						layers[i].nodes[j].x = 450 + Math.floor((total_nodes+1)/2)*200;
+						layers[i].nodes[j].x = 450 + Math.floor((total_nodes+1)/2)*175;
 						if( j%2 == 0){
 							layers[i].nodes[j].y = 100;
 						}
@@ -144,7 +160,7 @@
 				.attr("y1",function(d) { return d.src.y })
 				.attr("x2",function(d) { return d.dest.x })
 				.attr("y2",function(d) { return d.dest.y })
-				.style("stroke","rgb(6,150,225)")
+				.style("stroke","#3EA78A")
 				.style("stroke-width","2")
 
 			// CIRCLE PROPERTIES
@@ -183,13 +199,13 @@
 				.attr("r",function(d) { return 50; })
 				.attr("fill",function(d){
 					if ( d == 0){
-						return "gray";
+						return "#435550";
 					}
 					else if( d%2 != 0){
-						return "green";
+						return "#41CBB5";
 					}
 					else{
-						return "red";
+						return "#BCC427";
 					}
 				})
 				.attr("id",function(d){
@@ -253,6 +269,37 @@
 
 			// LINE PROPERTIES
 
+				activationTable = d3.select("body").append("table")
+								.attr("style","position:fixed")
+								.attr("style","bottom:50px");
+				var activationTableHead = activationTable.append("thead");
+				var activationTableBody = activationTable.append("tbody");
+				activationTableHead.append("tr")
+					.selectAll("th")
+					.data(headerData)
+					.enter()
+					.append("th")
+					.text(function(column) {
+						return column;
+					});
+				activationTableBody
+					.selectAll("tr")
+					.data(d3.range(0,tableTransmissionProbability.length+1))
+					.enter()
+					.append("tr");
+				activationTableBody.selectAll("tr")
+					.selectAll("td")
+					.data(function(d) {
+						return d3.values(tableTransmissionProbability[d-1]);
+			    	})
+					.enter()
+					.append("td").
+					text(function(element){
+						return element;
+					})
+
+
+
 				answer = viterbi_compute(data,layers,observed_sequence);
 
 
@@ -263,5 +310,5 @@
 
 <body>
 	Goal is to predict the most probable sequence of hidden states given a sequence of observed states. A HMM has been modelled and viterbi algorithm has been used. 
-	<svg class = 'container' width ='1500' height = '500'></svg>
+	<svg class = 'container' width ='1200' height = '500'></svg>
 </body>

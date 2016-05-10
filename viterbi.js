@@ -4,11 +4,17 @@ function sleep(time){
 		;
 	}
 }
+function animate_bigger(i,j,layers){
+	console.log(i,j);
+	var delay = (i+2) * 2000 + j *1000;
+	var cnt = 1 + (i-1) * layers[1].cnt  + j;
+	d3.select("#c_" + cnt).transition().delay(delay).attr("r",75);
+}
 function animate(this_node,this_text,layers,i,j){
 
 	var previous_color = this_node.attr("fill");
-	this_node.attr("fill","black");
-	var delay = (i+1) * 1000 + j *500;
+	this_node.attr("fill","0D0E04");
+	var delay = (i+1) * 2000 + j *1000;
 	var completed = false;
 
 	setTimeout(function(){
@@ -55,25 +61,34 @@ function viterbi_compute(data,layers,observed_sequence){
 							animate(d3.select("#c_"+cnt),d3.select("#t_"+cnt),layers,i,j);
 						}
 						best_probability = 0;
+						var temp_i, temp_j;
 						var best_state = null;
 						for ( k = 0; k < layers[i-1].cnt; k++ ){
 							if( layers[i-1].nodes[k].probability > best_probability  ){
 								best_probability = layers[i-1].nodes[k].probability;
 								best_state = layers[i-1].nodes[k].state;
+								temp_i = i-1;
+								temp_j = k;
 							}
 						}
-						answer.push(best_state);	
+						answer.push(best_state);
+						animate_bigger(temp_i,temp_j,layers);	
+
 					}
 				}
 				var best_probability = 0;
 				var best_state = null;
+				var best_k;
 				// CHOOSE BEST STATE FOR LAST STAGE ALONE
 				for ( k = 0; k < layers[layers.length-1].cnt; k++ ){
 						if( layers[layers.length-1].nodes[k].probability > best_probability  ){
 							best_probability = layers[layers.length-1].nodes[k].probability;
 							best_state = layers[layers.length-1].nodes[k].state;
+							best_k = k;
 						}
 					}
+				animate_bigger(layers.length-1,best_k,layers);
+
 				answer.push(best_state);
 	return answer			
 }
