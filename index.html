@@ -109,11 +109,11 @@
 				else{
 					for( j = 0; j < layers[i].cnt; j++ ){
 						layers[i].nodes[j].x = 450 + Math.floor((total_nodes+1)/2)*175;
-						if( j%2 == 0){
-							layers[i].nodes[j].y = 100;
+						if( j%2 != 0){
+							layers[i].nodes[j].y = 300;
 						}
 						else{
-							layers[i].nodes[j].y = 300;
+							layers[i].nodes[j].y = 100;
 						}	
 						total_nodes += 1;
 					}
@@ -213,7 +213,9 @@
 					}
 				})
 				.attr("id",function(d){
-					return 'c_' + d;
+					i = Math.floor((d-1)/2) + 1;
+				 	j = d%2;
+					return 'c_' + layers[i].nodes[j].id;
 				})
 
 
@@ -304,7 +306,7 @@
 
 
 
-				answer = viterbi_compute(data,layers,observed_sequence);
+				answer = viterbi_compute(data,layers,observed_sequence,0);
 
 
 		});
