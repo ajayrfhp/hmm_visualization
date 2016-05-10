@@ -131,7 +131,10 @@
 					this_node = layers[i].nodes[j];
 					for ( k = 0; k < layers[i+1].cnt; k++ ){
 						next_node = layers[i+1].nodes[k];
-						edges.push({'src' : { 'x' : this_node.x , 'y' : this_node.y},
+						var tmp_id = { 'src_ad' : i.toString() + j.toString() ,
+									  'dest_ad' : (i + 1).toString() +k.toString() };
+						edges.push({ 'id' : tmp_id.src_ad + tmp_id.dest_ad,   	
+									'src' : { 'x' : this_node.x , 'y' : this_node.y},
 									'dest' : { 'x' : next_node.x , 'y' : next_node.y
 								}});
 
@@ -160,6 +163,7 @@
 				.attr("y1",function(d) { return d.src.y })
 				.attr("x2",function(d) { return d.dest.x })
 				.attr("y2",function(d) { return d.dest.y })
+				.attr("id",function(d) { return "#e_" + d.id ; })
 				.style("stroke","#3EA78A")
 				.style("stroke-width","2")
 

@@ -9,7 +9,7 @@ function compute_transmission_table(data){
 		}
 		answer.push(sub_answer);
 	}
-	console.log(answer);
+
 	return answer;
 
 }
