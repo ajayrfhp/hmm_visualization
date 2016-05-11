@@ -28,7 +28,13 @@ function compute_emission_table(data){
 	return answer;
 }
 function compute_prior_table(data){
-	var answer = ["Probability"];
-	answer.push(data.start_probability);
+	var sub_answer = ["Probability"];
+	
+	keys = Object.keys(data.start_probability);
+	for(i = 0;i<keys.length;i++){
+		sub_answer.push(data.start_probability[keys[i]]);	
+	}
+	var answer = [];
+	answer.push(sub_answer);
 	return answer;
 }

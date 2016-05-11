@@ -124,6 +124,7 @@ function viterbi_compute_reverse(data,layers,observed_sequence,current_layer){
 			}
 			// animate bigger
 			animate_bigger(current_layer-1,best_j,data,layers,observed_sequence,current_layer);
+			d3.select(".ans").select("div:nth-child(" + current_layer + " )")[0][0].innerHTML = best_state;
 			answer.push(best_state);			
 		}
 		if( current_layer+1 < layers.length ){
@@ -146,6 +147,8 @@ function viterbi_compute_reverse(data,layers,observed_sequence,current_layer){
 				}
 				// animate bigger
 				animate_bigger(current_layer,best_j,data,layers,observed_sequence,current_layer);
+				var last_variable = current_layer + 1;
+				d3.select(".ans").select("div:nth-child(" + last_variable  + " )")[0][0].innerHTML = best_state;
 				answer.push(best_state);					
 				},3000);
 		}

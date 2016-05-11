@@ -3,6 +3,11 @@
 	left : 300px;
 	bottom : 80px; 
 }
+#table_3{
+	position : fixed;
+	left : 600px;
+	bottom : 100px; 
+}
 .obs{
 	float : left;
 	position : fixed;
@@ -17,7 +22,14 @@
 	position:fixed;
 	bottom:20px;
 }
+.ans{
+	position:fixed;
+	left: 450px;
+	bottom:200px;
+	font-weight: bolder;
+}
 .subInfo{
+	
 	float:left;
 	width: 300px;
 	font-size: 25px;

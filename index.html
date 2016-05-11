@@ -62,7 +62,7 @@
 			};
 			tableTransmissionProbability = compute_transmission_table(data);
 			tableEmissionProbability = compute_emission_table(data);
-			//tablePriorProbability = compute_prior_table(data);
+			tablePriorProbability = compute_prior_table(data);
 			rowData = data.states;
 			headerData = data.states.slice();
 			
@@ -351,6 +351,35 @@
 						return element;
 					})
 
+				priorTable = d3.select("body").append("table")
+								.attr("id","table_3");
+
+				var priorTableHead = priorTable.append("thead");
+				var priorTableBody = priorTable.append("tbody");
+				priorTableHead.append("tr")
+					.selectAll("th")
+					.data(["States","Healthy","Fever"])
+					.enter()
+					.append("th")
+					.text(function(column) {
+						return column;
+					});
+				priorTableBody
+					.selectAll("tr")
+					.data(d3.range(0,3))
+					.enter()
+					.append("tr");
+				priorTableBody.selectAll("tr")
+					.selectAll("td")
+					.data(function(d) {
+						return d3.values(tablePriorProbability[d-1]);
+			    	})
+					.enter()
+					.append("td").
+					text(function(element){
+						return element;
+					})	
+
 
 				observationDiv = d3.select("body").append("div").attr("class","obs");
 
@@ -362,8 +391,20 @@
 					.attr("class","subObs")
 					.text(function(d){
 						return d;
-					})
+					});
 
+				observationDiv = d3.select("body").append("div").attr("class","ans");
+
+				observationDiv
+					.selectAll("div")
+					.data(["HIDDEN STATES","TBD","TBD","TBD"])
+					.enter()
+					.append("div")
+					.attr("class","subObs")
+					.text(function(d){
+						return d;
+					});
+				
 
 				viterbi_compute_reverse(data,layers,observed_sequence,0);
 
