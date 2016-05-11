@@ -7,7 +7,7 @@ function animate_edge(i,j,k){
 	var delay = (j+1) * 1000;
 	var this_id = "#e_"+ (i-1).toString() + (k).toString() + (i).toString() + (j).toString() ; 
 	var edge = document.getElementById(this_id);
-	d3.select(edge).transition().delay(delay).attr("style","stroke: rgb(62, 167, 138);stroke-width:5");
+	d3.select(edge).transition().delay(delay).attr("style","stroke: rgb(62, 167, 138);stroke-width:7");
 	var row_number = null;
 	var column_number = null;
 	var this_state = edge_src.state;
@@ -32,9 +32,18 @@ function animate_node(i,j,data,layers,observed_sequence,current_layer){
 	circle.attr("fill","#0D0E04");
 	var delay = (j+1) * 1000;
 
+
+	// animate appropriate observed sequence
+	var ind = current_layer + 1;
+
+	if( i != 0 ){
+		d3.select(".obs").select("div:nth-child(" + ind + ")" ).transition().delay(delay).attr("style","background-color:black;color:white");
+		
+	}
+
+
 	// animate appropriate row in table as well
 	var state = node.state;
-
 	var row_number = null;
 	if( i!=0 )
 		{
@@ -49,6 +58,9 @@ function animate_node(i,j,data,layers,observed_sequence,current_layer){
 		});
 		if(row_number != null)
 			d3.select("tr:nth-child(" + row_number + ")" ).attr("style","background-color:white;color:black");
+		if( i != 0 )
+			d3.select(".obs").select("div:nth-child(" + ind + ")" ).attr("style","background-color:white;color:black");
+
 	},delay + 500);
 }
 
@@ -71,6 +83,9 @@ function viterbi_compute_reverse(data,layers,observed_sequence,current_layer){
 			var this_node = layers[current_layer].nodes[j];
 			// scan values from nodes of previous layer
 			var best_probability = 0;
+
+
+
 			for( k = 0; k < layers[current_layer-1].cnt; k++ ){
 				var previous_node = layers[current_layer-1].nodes[k];
 				// animate_edge between ( i-1,k and i,j )

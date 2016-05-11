@@ -1,0 +1,15 @@
+#table_2{
+	position : fixed;
+	left : 300px;
+	bottom : 80px; 
+}
+.obs{
+	float : left;
+	position : fixed;
+	left : 450px;
+	bottom : 250px;
+}
+.subObs{
+	float : left;
+	width: 175px;
+}

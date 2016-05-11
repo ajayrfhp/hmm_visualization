@@ -5,6 +5,7 @@
 <script type="text/javascript" src = 'bower_components/d3/d3.js'></script>
 <script type="text/javascript" src = 'viterbi.js'></script>
 <script type="text/javascript" src = 'util.js'></script>
+<link rel="stylesheet" type="text/css" href="style.css">
 
 
 	<script type="text/javascript">
@@ -25,6 +26,8 @@
 		var headerData = null;
 		var rowData = null;
 		var tableTransmissionProbability = null;
+		var tableEmissionProbability = null;
+		var observationDiv = null;
 		$(document).ready(function(){
 			data = {
 				'states' : ['Healthy','Fever'],
@@ -57,6 +60,7 @@
 				}
 			};
 			tableTransmissionProbability = compute_transmission_table(data);
+			tableEmissionProbability = compute_emission_table(data);
 			rowData = data.states;
 			headerData = data.states.slice();
 			
@@ -315,6 +319,47 @@
 						return element;
 					})
 
+				emissionTable = d3.select("body").append("table")
+								.attr("id","table_2");
+
+				var emissionTableHead = emissionTable.append("thead");
+				var emissionTableBody = emissionTable.append("tbody");
+				emissionTableHead.append("tr")
+					.selectAll("th")
+					.data(["States","Normal","Cold","Dizzy"])
+					.enter()
+					.append("th")
+					.text(function(column) {
+						return column;
+					});
+				emissionTableBody
+					.selectAll("tr")
+					.data(d3.range(0,tableTransmissionProbability.length+1))
+					.enter()
+					.append("tr");
+				emissionTableBody.selectAll("tr")
+					.selectAll("td")
+					.data(function(d) {
+						return d3.values(tableEmissionProbability[d-1]);
+			    	})
+					.enter()
+					.append("td").
+					text(function(element){
+						return element;
+					})
+
+
+				observationDiv = d3.select("body").append("div").attr("class","obs");
+
+				observationDiv
+					.selectAll("div")
+					.data(["Observed Sequences","Normal","Cold","Dizzy"])
+					.enter()
+					.append("div")
+					.attr("class","subObs")
+					.text(function(d){
+						return d;
+					})
 
 
 				viterbi_compute_reverse(data,layers,observed_sequence,0);
