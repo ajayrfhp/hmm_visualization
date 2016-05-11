@@ -35,22 +35,25 @@ function animate_node(i,j,data,layers,observed_sequence,current_layer){
 
 	// animate appropriate observed sequence
 	var ind = current_layer + 1;
+	var state = node.state;
+	
+	var row_number = null;
+	var column_number = null;
+	var current_obs = observed_sequence[current_layer];
+	if( i!=0 ){
+			row_number = data.states.indexOf(state) + 2;
+			column_number = current_layer + 1;
+			d3.select("#table_1").select("tr:nth-child(" + row_number + ")" ).transition().delay(delay).attr("style","background-color:black;color:white");
+		}
 
 	if( i != 0 ){
 		d3.select(".obs").select("div:nth-child(" + ind + ")" ).transition().delay(delay).attr("style","background-color:black;color:white");
-		
+		d3.select("#table_2").select("tr:nth-child(" + row_number + ")" ).select("td:nth-child(" + column_number + ")" ).transition().delay(delay).attr("style","background-color:black;color:white");
 	}
 
 
 	// animate appropriate row in table as well
-	var state = node.state;
-	var row_number = null;
-	if( i!=0 )
-		{
-			row_number = data.states.indexOf(state) + 2;
-			d3.select("tr:nth-child(" + row_number + ")" ).transition().delay(delay).attr("style","background-color:black;color:white");
-		}
-	
+		
 	setTimeout(function(){
 		circle.attr("fill",previous_color);
 		text.text(function(d){
@@ -60,7 +63,7 @@ function animate_node(i,j,data,layers,observed_sequence,current_layer){
 			d3.select("tr:nth-child(" + row_number + ")" ).attr("style","background-color:white;color:black");
 		if( i != 0 )
 			d3.select(".obs").select("div:nth-child(" + ind + ")" ).attr("style","background-color:white;color:black");
-
+			d3.select("#table_2").select("tr:nth-child(" + row_number + ")" ).select("td:nth-child(" + column_number + ")" ).transition().delay(delay-1000).attr("style","background-color:white;color:black");		
 	},delay + 500);
 }
 
