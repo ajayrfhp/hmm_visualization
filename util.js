@@ -27,3 +27,8 @@ function compute_emission_table(data){
 	}
 	return answer;
 }
+function compute_prior_table(data){
+	var answer = ["Probability"];
+	answer.push(data.start_probability);
+	return answer;
+}

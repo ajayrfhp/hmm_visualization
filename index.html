@@ -27,6 +27,7 @@
 		var rowData = null;
 		var tableTransmissionProbability = null;
 		var tableEmissionProbability = null;
+		var tablePriorProbability = null;
 		var observationDiv = null;
 		$(document).ready(function(){
 			data = {
@@ -61,6 +62,7 @@
 			};
 			tableTransmissionProbability = compute_transmission_table(data);
 			tableEmissionProbability = compute_emission_table(data);
+			//tablePriorProbability = compute_prior_table(data);
 			rowData = data.states;
 			headerData = data.states.slice();
 			
@@ -374,4 +376,16 @@
 <body>
 	Goal is to predict the most probable sequence of hidden states given a sequence of observed states. A HMM has been modelled and viterbi algorithm has been used. 
 	<svg class = 'container' width ='1200' height = '500'></svg>
+	<div class = 'info'>
+		<div class = 'subInfo'>
+			Transition Probability
+		</div>
+		<div class = 'subInfo'>
+			Emission Probability
+		</div>
+		<div class = 'subInfo'>
+			Prior Probability
+		</div>
+		
+	</div>
 </body>

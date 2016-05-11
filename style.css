@@ -13,3 +13,12 @@
 	float : left;
 	width: 175px;
 }
+.info{
+	position:fixed;
+	bottom:20px;
+}
+.subInfo{
+	float:left;
+	width: 300px;
+	font-size: 25px;
+}

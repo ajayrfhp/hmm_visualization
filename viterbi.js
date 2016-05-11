@@ -59,11 +59,14 @@ function animate_node(i,j,data,layers,observed_sequence,current_layer){
 		text.text(function(d){
 				return layers[i].nodes[j].probability.toFixed(3);
 		});
-		if(row_number != null)
-			d3.select("tr:nth-child(" + row_number + ")" ).attr("style","background-color:white;color:black");
-		if( i != 0 )
+		if(row_number != null){
+				d3.select("#table_1").select("tr:nth-child(" + row_number + ")" ).attr("style","background-color:white;color:black");
+			}
+		if( i != 0 ){
 			d3.select(".obs").select("div:nth-child(" + ind + ")" ).attr("style","background-color:white;color:black");
-			d3.select("#table_2").select("tr:nth-child(" + row_number + ")" ).select("td:nth-child(" + column_number + ")" ).transition().delay(delay-1000).attr("style","background-color:white;color:black");		
+			d3.select("#table_2").select("tr:nth-child(" + row_number + ")" ).select("td:nth-child(" + column_number + ")" ).transition().delay(delay-1000).attr("style","background-color:white;color:black");			
+		}
+		
 	},delay + 500);
 }
 
